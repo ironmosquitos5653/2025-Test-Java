@@ -21,8 +21,10 @@ public class VisionSubsystem extends SubsystemBase {
   public VisionSubsystem(Drive driveSubsystem) {
     m_driveSubsystem = driveSubsystem;
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
-    tab.addString("Pose", this::getFomattedPose).withPosition(0, 0).withSize(2, 0);
-    tab.add("Field", field2d).withPosition(2, 0).withSize(6, 4);
+    tab.addString("Pose", this::getFomattedPose).withPosition(0, 0).withSize(4, 0);
+
+    tab.addString("Pose2", this::getFomattedPose2).withPosition(0, 3).withSize(2, 0);
+    tab.add("Field", field2d).withPosition(3, 0).withSize(6, 4);
   }
 
   @Override
@@ -49,7 +51,8 @@ public class VisionSubsystem extends SubsystemBase {
       if (!doRejectUpdate) {
         SmartDashboard.putString("mt1", getFomattedPose(mt1.pose));
         m_driveSubsystem.addVisionMeasurement(
-            mt1.pose, mt1.timestampSeconds, VecBuilder.fill(.5, .5, .5));//9999999));
+            mt1.pose, mt1.timestampSeconds, VecBuilder.fill(.1, .1, .1)); // 9999999));
+        SmartDashboard.putNumber("mt1X", mt1.timestampSeconds);
         updateField();
       }
     } else if (useMegaTag2 == true) {
@@ -71,7 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
         if (!doRejectUpdate) {
           m_driveSubsystem.addVisionMeasurement(
-              mt2.pose, mt2.timestampSeconds, VecBuilder.fill(.5, .5, 9999999));
+              mt2.pose, mt2.timestampSeconds, VecBuilder.fill(.5, .5, .5));
           updateField();
         }
       }
@@ -84,6 +87,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   private String getFomattedPose() {
     return getFomattedPose(m_driveSubsystem.getPose());
+  }
+
+  private String getFomattedPose2() {
+    return getFomattedPose(m_driveSubsystem.getPose2());
   }
 
   private String getFomattedPose(Pose2d pose) {
