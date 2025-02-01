@@ -171,6 +171,8 @@ public class Drive extends SubsystemBase {
         lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
 
+      SmartDashboard.putNumber("The Yaw", gyroInputs.yawPosition.getDegrees());
+
       // Update gyro angle
       if (gyroInputs.connected) {
         // Use the real gyro angle
@@ -316,7 +318,7 @@ public class Drive extends SubsystemBase {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    poseEstimator.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }
 
   /** Adds a new timestamped vision measurement. */

@@ -6,6 +6,11 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -17,6 +22,12 @@ public class VisionSubsystem extends SubsystemBase {
   private Drive m_driveSubsystem;
   /** Creates a new VisionSubsystem. */
   private final Field2d field2d = new Field2d();
+
+  private Transform3d cameraPose =
+      new Transform3d(
+          new Translation3d(
+              Units.inchesToMeters(-12.5), Units.inchesToMeters(11), Units.inchesToMeters(0)),
+          new Rotation3d(0, 0, 0));
 
   public VisionSubsystem(Drive driveSubsystem) {
     m_driveSubsystem = driveSubsystem;
@@ -51,7 +62,9 @@ public class VisionSubsystem extends SubsystemBase {
       if (!doRejectUpdate) {
         SmartDashboard.putString("mt1", getFomattedPose(mt1.pose));
         m_driveSubsystem.addVisionMeasurement(
-            mt1.pose, mt1.timestampSeconds, VecBuilder.fill(.1, .1, .1)); // 9999999));
+            cameraTransform(mt1.pose),
+            mt1.timestampSeconds,
+            VecBuilder.fill(.1, .1, .1)); // 9999999));
         SmartDashboard.putNumber("mt1X", mt1.timestampSeconds);
         updateField();
       }
@@ -74,11 +87,16 @@ public class VisionSubsystem extends SubsystemBase {
         }
         if (!doRejectUpdate) {
           m_driveSubsystem.addVisionMeasurement(
-              mt2.pose, mt2.timestampSeconds, VecBuilder.fill(.5, .5, .5));
+              cameraTransform(mt2.pose), mt2.timestampSeconds, VecBuilder.fill(.5, .5, .5));
+
           updateField();
         }
       }
     }
+  }
+
+  public Pose2d cameraTransform(Pose2d pose) {
+    return new Pose3d(pose).transformBy(cameraPose).toPose2d();
   }
 
   public void updateField() {
