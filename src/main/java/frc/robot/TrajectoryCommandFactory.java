@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -10,6 +11,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.subsystems.drive.Drive;
 
@@ -63,6 +65,15 @@ public class TrajectoryCommandFactory {
             thetaController,
             m_robotDrive::setModuleStates,
             m_robotDrive);
+    }
+
+    public Command buildTrajectoryCommand(Pose2d current, Pose2d target) {
+        Trajectory trajectory = createTrajectory(
+            current,
+            new ArrayList<Translation2d>(),
+            target);
+
+        return createTrajectoryCommand(trajectory);
     }
     
 }
