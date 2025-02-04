@@ -134,9 +134,10 @@ public class VisionSubsystem extends SubsystemBase {
     blueReefSides.add(new Pose2d(new Translation2d(2.789, 3.986), new Rotation2d(0))); // left
   }
 
-  private List<ReefSide> blueReefSidess = new ArrayList<ReefSide>();
+  private List<ReefSide> blueReefSidess;
 
   private void initReefss() {
+    blueReefSidess = new ArrayList<ReefSide>();
     blueReefSidess.add(
         new ReefSide(
             new Pose2d(new Translation2d(7, 4), new Rotation2d(0)), // Reef Side Position (away)
