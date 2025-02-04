@@ -209,7 +209,7 @@ public class Drive extends SubsystemBase {
     setModuleStates(kinematics.toSwerveModuleStates(discreteSpeeds));
   }
 
-  public void setModuleStates(SwerveModuleState[]setpointStates) {
+  public void setModuleStates(SwerveModuleState[] setpointStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
 
     // Log unoptimized setpoints

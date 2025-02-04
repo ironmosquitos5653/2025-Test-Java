@@ -14,7 +14,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.LineUpCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -42,6 +42,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private VisionSubsystem visionSubsystem;
+  private TrajectoryCommandFactory trajectoryCommandFactory;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -87,6 +88,7 @@ public class RobotContainer {
     }
 
     visionSubsystem = new VisionSubsystem(drive);
+    trajectoryCommandFactory = new TrajectoryCommandFactory(drive, visionSubsystem);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -140,15 +142,14 @@ public class RobotContainer {
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
+    // controller.leftBumper().whileTrue(new StrafeCommand(drive, .3));
+    // controller.rightBumper().whileTrue(new StrafeCommand(drive, -.3));
     controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+        .leftBumper()
+        .onTrue(new LineUpCommand(trajectoryCommandFactory, visionSubsystem, true));
+    controller
+        .rightBumper()
+        .onTrue(new LineUpCommand(trajectoryCommandFactory, visionSubsystem, false));
   }
 
   /**

@@ -4,24 +4,23 @@
 
 package frc.robot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.TrajectoryCommandFactory;
 import frc.robot.subsystems.drive.Drive;
+import java.util.ArrayList;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TestDriveToPosition extends Command {
   /** Creates a new TestDriveToPosition. */
   Drive m_driveSubsystem;
+
   TrajectoryCommandFactory m_trajectoryCommandFactory;
-  public TestDriveToPosition(Drive driveSubsystem, TrajectoryCommandFactory trajectoryCommandFactory) {
+
+  public TestDriveToPosition(
+      Drive driveSubsystem, TrajectoryCommandFactory trajectoryCommandFactory) {
 
     m_driveSubsystem = driveSubsystem;
     m_trajectoryCommandFactory = trajectoryCommandFactory;
@@ -46,11 +45,10 @@ public class TestDriveToPosition extends Command {
   }
 
   public Command buildTrajectoryCommand(Pose2d current, Pose2d target) {
-    Trajectory trajectory = m_trajectoryCommandFactory.createTrajectory(
-        current,
-        new ArrayList<Translation2d>(),
-        target);
+    Trajectory trajectory =
+        m_trajectoryCommandFactory.createTrajectory(
+            current, new ArrayList<Translation2d>(), target);
 
-  return m_trajectoryCommandFactory.createTrajectoryCommand(trajectory);
-}
+    return m_trajectoryCommandFactory.createTrajectoryCommand(trajectory);
+  }
 }

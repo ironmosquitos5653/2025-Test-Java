@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "VisionTest"
+            "pathName": "a"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "b"
           }
         }
       ]

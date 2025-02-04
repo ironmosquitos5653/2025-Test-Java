@@ -64,6 +64,15 @@ public class DriveCommands {
         .getTranslation();
   }
 
+  public static Command strafe(Drive drive, boolean left) {
+    return Commands.run(
+        () -> {
+          ChassisSpeeds speeds = new ChassisSpeeds(.3, 0, 0);
+
+          drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
+        },
+        drive);
+  }
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */

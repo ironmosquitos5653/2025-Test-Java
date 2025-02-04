@@ -7,8 +7,10 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -17,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.Drive;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VisionSubsystem extends SubsystemBase {
   private Drive m_driveSubsystem;
@@ -30,6 +34,8 @@ public class VisionSubsystem extends SubsystemBase {
           new Rotation3d(0, 0, 0));
 
   public VisionSubsystem(Drive driveSubsystem) {
+
+    initReefss();
     m_driveSubsystem = driveSubsystem;
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
     tab.addString("Pose", this::getFomattedPose).withPosition(0, 0).withSize(4, 0);
@@ -40,7 +46,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    findClosest();
     boolean useMegaTag2 = !true; // set to false to use MegaTag1
     boolean doRejectUpdate = false;
     if (useMegaTag2 == false) {
@@ -66,7 +72,6 @@ public class VisionSubsystem extends SubsystemBase {
             mt1.timestampSeconds,
             VecBuilder.fill(.1, .1, .1)); // 9999999));
         SmartDashboard.putNumber("mt1X", mt1.timestampSeconds);
-        updateField();
       }
     } else if (useMegaTag2 == true) {
       LimelightHelpers.SetRobotOrientation(
@@ -88,11 +93,10 @@ public class VisionSubsystem extends SubsystemBase {
         if (!doRejectUpdate) {
           m_driveSubsystem.addVisionMeasurement(
               cameraTransform(mt2.pose), mt2.timestampSeconds, VecBuilder.fill(.5, .5, .5));
-
-          updateField();
         }
       }
     }
+    updateField();
   }
 
   public Pose2d cameraTransform(Pose2d pose) {
@@ -115,5 +119,57 @@ public class VisionSubsystem extends SubsystemBase {
 
     return String.format(
         "(%.2f, %.2f) %.2f degrees", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+  }
+
+  private List<Pose2d> blueReefSides = new ArrayList<Pose2d>();
+
+  private void initReefs() {
+    blueReefSides.add(
+        new Pose2d(new Translation2d(3.676, 2.406), new Rotation2d(0))); // bottom left
+    blueReefSides.add(
+        new Pose2d(new Translation2d(5.519, 2.494), new Rotation2d(0))); // bottom right
+    blueReefSides.add(new Pose2d(new Translation2d(6.182, 4.015), new Rotation2d(0))); // right
+    blueReefSides.add(new Pose2d(new Translation2d(5.567, 5.507), new Rotation2d(0))); // top right
+    blueReefSides.add(new Pose2d(new Translation2d(3.481, 5.26), new Rotation2d(0))); // top left
+    blueReefSides.add(new Pose2d(new Translation2d(2.789, 3.986), new Rotation2d(0))); // left
+  }
+
+  private List<ReefSide> blueReefSidess = new ArrayList<ReefSide>();
+
+  private void initReefss() {
+    blueReefSidess.add(
+        new ReefSide(
+            new Pose2d(new Translation2d(7, 4), new Rotation2d(0)), // Reef Side Position (away)
+            new Pose2d(
+                new Translation2d(6.220, 3.84), new Rotation2d(180)), // Left Position (On Reef)
+            new Pose2d(
+                new Translation2d(6.172, 4.161), new Rotation2d(180)), // Right Position (On Reef)
+            "BlueRight"));
+    blueReefSidess.add(
+        new ReefSide(
+            new Pose2d(
+                new Translation2d(5.821, 1.782), new Rotation2d(0)), // Reef Side Position (away)
+            new Pose2d(
+                new Translation2d(5.168, 2.494), new Rotation2d(120)), // Left Position (On Reef)
+            new Pose2d(
+                new Translation2d(5.489, 2.68), new Rotation2d(120)), // Right Position (On Reef)
+            "BlueRightBottom"));
+  }
+
+  public ReefSide findClosest() {
+    Pose2d pose = m_driveSubsystem.getPose();
+    ReefSide closest = null;
+    double distance = 100;
+    if (blueReefSidess != null) {
+      for (ReefSide p : blueReefSidess) {
+        double d = p.getSidePosition().getTranslation().getDistance(pose.getTranslation());
+        if (d < distance) {
+          distance = d;
+          closest = p;
+        }
+      }
+      SmartDashboard.putString("Closest", closest.getDescription());
+    }
+    return closest;
   }
 }
