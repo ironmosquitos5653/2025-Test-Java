@@ -10,10 +10,10 @@ public class ReefSide {
 
   public ReefSide(
       Pose2d sidePosition, Pose2d leftPosition, Pose2d rightPosition, String description) {
-    sidePosition = this.sidePosition;
-    leftPosition = this.leftPosition;
-    rightPosition = this.rightPosition;
-    description = this.description;
+    this.sidePosition = sidePosition;
+    this.leftPosition = leftPosition;
+    this.rightPosition = rightPosition;
+    this.description = description;
   }
 
   public Pose2d getSidePosition() {

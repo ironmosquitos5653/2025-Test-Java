@@ -121,19 +121,6 @@ public class VisionSubsystem extends SubsystemBase {
         "(%.2f, %.2f) %.2f degrees", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
   }
 
-  private List<Pose2d> blueReefSides = new ArrayList<Pose2d>();
-
-  private void initReefs() {
-    blueReefSides.add(
-        new Pose2d(new Translation2d(3.676, 2.406), new Rotation2d(0))); // bottom left
-    blueReefSides.add(
-        new Pose2d(new Translation2d(5.519, 2.494), new Rotation2d(0))); // bottom right
-    blueReefSides.add(new Pose2d(new Translation2d(6.182, 4.015), new Rotation2d(0))); // right
-    blueReefSides.add(new Pose2d(new Translation2d(5.567, 5.507), new Rotation2d(0))); // top right
-    blueReefSides.add(new Pose2d(new Translation2d(3.481, 5.26), new Rotation2d(0))); // top left
-    blueReefSides.add(new Pose2d(new Translation2d(2.789, 3.986), new Rotation2d(0))); // left
-  }
-
   private List<ReefSide> blueReefSidess;
 
   private void initReefss() {
@@ -142,18 +129,22 @@ public class VisionSubsystem extends SubsystemBase {
         new ReefSide(
             new Pose2d(new Translation2d(7, 4), new Rotation2d(0)), // Reef Side Position (away)
             new Pose2d(
-                new Translation2d(6.220, 3.84), new Rotation2d(180)), // Left Position (On Reef)
+                new Translation2d(5.86, 3.9),
+                new Rotation2d(Units.degreesToRadians(180))), // Left Position (On Reef)
             new Pose2d(
-                new Translation2d(6.172, 4.161), new Rotation2d(180)), // Right Position (On Reef)
+                new Translation2d(5.821, 4.288),
+                new Rotation2d(Units.degreesToRadians(180))), // Right Position (On Reef)
             "BlueRight"));
     blueReefSidess.add(
         new ReefSide(
             new Pose2d(
                 new Translation2d(5.821, 1.782), new Rotation2d(0)), // Reef Side Position (away)
             new Pose2d(
-                new Translation2d(5.168, 2.494), new Rotation2d(120)), // Left Position (On Reef)
+                new Translation2d(5.004, 2.785),
+                new Rotation2d(Units.degreesToRadians(120))), // Left Position (On Reef)
             new Pose2d(
-                new Translation2d(5.489, 2.68), new Rotation2d(120)), // Right Position (On Reef)
+                new Translation2d(5.319, 2.921),
+                new Rotation2d(Units.degreesToRadians(120))), // Right Position (On Reef)
             "BlueRightBottom"));
   }
 
